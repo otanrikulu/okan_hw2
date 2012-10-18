@@ -7,7 +7,42 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+
+	sort = params[:sort]
+     
+#     sort = params[:sort] || session[:sort]
+#	case sort
+#	when 'title' then @title_header = {:order => :title}, 'hilite'
+#    when 'release_date'
+#      ordering,@date_header = {:order => :release_date}, 'hilite'
+#	end
+
+#     @movies = Movie.all
+#     if 'title' then 
+#        @title_header = {:order => :title}, 'hilite'
+#     end
+#    if 'title' then
+#	Movie.find(:all, :order => 'title')
+#   end
+
+	case sort
+	when 'title'
+		@movies = Movie.find(:all, :order => 'title')
+		@title_header = {:order => :title}, 'hilite'
+	when 'release_date'
+		@movies = Movie.find(:all, :order => 'release_date')
+		@release_date_header = {:order => :release_date}, 'hilite'
+	else
+		@movies = Movie.all
+	end
+
+#	if sort then
+#		@movies = Movie.find(:all, :order => 'title')
+#		@title_header = {:order => :title}, 'hilite'
+#	else
+#		@movies = Movie.all
+#	end    
+    
   end
 
   def new

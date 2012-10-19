@@ -1,7 +1,28 @@
 -#  This file is app/views/movies/index.html.haml
 %h1 All Movies
 
-= hidden_field_tag "title_sort", true if @title_header
+-#= hidden_field_tag "title_sort", true if @title_header
+= form_tag movies_path, :method => :get, :id => 'ratings_form' do
+  Include: 
+  - @all_ratings.each do |rating|
+    = rating
+    = check_box_tag "ratings[#{rating}]", 1, @ratingselection.include?(rating)
+  = submit_tag 'Submit', :id => 'ratings_submit'
+
+%p rating check boxes selected (ratingselection)
+%p= @ratingselection.inspect 
+-#%p all ratings in the database --> This works
+-#%p= @all_ratings.inspect  
+%p sort information kept in the session (my_session_sort)
+%p= @my_session_sort.inspect  
+%p sort information kept in the params (my_params_sort)
+%p= @my_params_sort = params[:sort]
+%p rating information kept in the session (my_session_rating)
+%p= @my_session_rating.inspect   
+%p rating information in the params (my_params_rating)
+%p= @my_params_rating
+%p= @checked_ratings
+
 
 %table#movies
   %thead

@@ -30,7 +30,8 @@ class MoviesController < ApplicationController
     my_ratings = Hash.new()
 #    all_ratings_hash = Utils.ratinghash(@all_ratings)
     all_ratings_hash = {"G"=>"1", "R"=>"1", "PG-13"=>"1", "PG"=>"1"}
-    @selected_ratings = params[:ratings] || session[:ratings] || all_ratings_hash
+#    @selected_ratings = params[:ratings] || session[:ratings] || all_ratings_hash
+    @selected_ratings = all_ratings_hash
 
     if params[:sort] != session[:sort]
       session[:sort] = sort

@@ -8,49 +8,40 @@ class MoviesController < ApplicationController
 
   def index
 
-#	@all_ratings = Movie.all(:select => 'rating').map(&:rating).uniq
-#	This is working. Now, let's define a method in Movie.
+    sort = params[:sort] || session[:sort]
+    case sort
+    when 'title'
+      @movies = Movie.find_all_by_rating(@selected_ratings, :order => 'title')
+      @title_header = {:order => :title}, 'hilite'
+    when 'release_date'
+      @movies = Movie.find_all_by_rating(@selected_ratings, :order => 'release_date')
+      @release_date_header = {:order => :release_date}, 'hilite'
+    end
+    @all_ratings = Movie.ratingcollect
+#    @all_ratings = %w(G PG PG-13 NC-17 R)
+#    all_ratings_hash = Hash.new()
+#    c = 0
+#      while c < @all_ratings.size
+#      all_ratings_hash.store(@all_ratings[c], "1")
+#      c += 1
+#    end
 
-	sort = params[:sort]
-	@all_ratings = Movie.ratingcollect #reads all available ratings from the table
-#	@ratingselection = params[:ratings] || session[:ratings] || {}
-#	@ratingselection = @all_ratings
-	@my_session_sort = session[:sort]
-	@my_params_sort = params[:sort]
-	@my_session_rating = session[:ratings]
-	@my_params_rating = params[:ratings]
+    my_ratings = Hash.new()
+    all_ratings_hash = Utils.ratinghash(@all_ratings)
+    @selected_ratings = params[:ratings] || session[:ratings] || all_ratings_hash
 
-#	if @ratingselection == {} then
-#		@ratingselection = @all_ratings
-#	else @ratingselection = params[:ratings]
-#	end
+    if params[:sort] != session[:sort]
+      session[:sort] = sort
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
+    end
 
-	@ratingselection = params[:ratings] || @all_ratings
-#	@ratingselection = params[:ratings] || session[:ratings] || {}
-#	if @ratingselection == (params[:ratings] || session[:ratings] || {}) then
-#		@ratingsselection
-#	else
-#		@ratingselection = @all_ratings
-#	end
+    if params[:ratings] != session[:ratings] and @selected_ratings != {}
+      session[:sort] = sort
+      session[:ratings] = @selected_ratings
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
+    end
+    @movies = Movie.find_all_by_rating(@selected_ratings.keys,:order => sort)
 
-	case sort
-	when 'title'
-#		@checked_ratings = @ratingselection.keys
-#		@movies = Movie.find(:all, :order => 'title')
-		@movies = Movie.find_all_by_rating(@ratingselection, :order => 'title')
-#		@movies = Movie.find_all_by_rating(@checked_ratings, :order => 'title')
-		@title_header = {:order => :title}, 'hilite'
-	when 'release_date'
-#		@checked_ratings = @ratingselection.keys
-#		@movies = Movie.find(:all, :order => 'release_date')
-		@movies = Movie.find_all_by_rating(@ratingselection, :order => 'release_date')
-#		@movies = Movie.find_all_by_rating(@checked_ratings, :order => 'release_date')
-		@release_date_header = {:order => :release_date}, 'hilite'
-	else
-		@checked_ratings = @ratingselection.keys
-		@movies = Movie.find_all_by_rating(@checked_ratings)
-#		@movies = Movie.find_all_by_rating(@ratingselection)
-	end
   end
 
   def new

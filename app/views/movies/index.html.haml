@@ -6,22 +6,26 @@
   Include: 
   - @all_ratings.each do |rating|
     = rating
-    = check_box_tag "ratings[#{rating}]", 1, @ratingselection.include?(rating)
+    = check_box_tag "ratings[#{rating}]", 1, @selected_ratings.include?(rating)
   = submit_tag 'Submit', :id => 'ratings_submit'
 
-%p rating check boxes selected (ratingselection)
-%p= @ratingselection.inspect 
+-#%p rating check boxes selected (ratingselection)
+-#%p= @ratingselection.inspect 
 -#%p all ratings in the database --> This works
 -#%p= @all_ratings.inspect  
-%p sort information kept in the session (my_session_sort)
-%p= @my_session_sort.inspect  
-%p sort information kept in the params (my_params_sort)
-%p= @my_params_sort = params[:sort]
-%p rating information kept in the session (my_session_rating)
-%p= @my_session_rating.inspect   
-%p rating information in the params (my_params_rating)
-%p= @my_params_rating
-%p= @checked_ratings
+
+-#%p sortorder
+-#%p= @sortorder
+-#%p= @okan
+-#%p sort information kept in the session (my_session_sort)
+-#%p= @my_session_sort.inspect  
+-#%p sort information kept in the params (my_params_sort)
+-#%p= @my_params_sort = params[:sort]
+-#%p rating information kept in the session (my_session_rating)
+-#%p= @my_session_rating.inspect   
+-#%p rating information in the params (my_params_rating)
+-#%p= @my_params_rating
+-#%p= @checked_ratings
 
 
 %table#movies

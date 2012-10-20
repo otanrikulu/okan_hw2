@@ -1,52 +1,48 @@
 class MoviesController < ApplicationController
-
+# THIS FILE WORKS PERFECTLY FINE LOCALLY, BUT NOT ON HEROKU!..
   def show
     id = params[:id] # retrieve movie ID from URI route
     @movie = Movie.find(id) # look up movie by unique ID
     # will render app/views/movies/show.<extension> by default
   end
 
-
-
   def index
-#	@all_ratings = Movie.all(:select => 'rating').map(&:rating).uniq
-#	This is working. Now, let's define a method in Movie.
 
-	sort = params[:sort]
-	@all_ratings = Movie.ratingcollect #reads all available ratings from the table
-	@selected_ratings = params[:ratings] || session[:ratings] || {}
-	@my_session_sort = session[:sort]
-	@my_session_rating = session[:ratings]
+    sort = params[:sort] || session[:sort]
+    case sort
+    when 'title'
+      @movies = Movie.find_all_by_rating(@selected_ratings, :order => 'title')
+      @title_header = {:order => :title}, 'hilite'
+    when 'release_date'
+      @movies = Movie.find_all_by_rating(@selected_ratings, :order => 'release_date')
+      @release_date_header = {:order => :release_date}, 'hilite'
+    end
+#    @all_ratings = Movie.ratingcollect
+    @all_ratings = ["G", "R", "PG-13", "PG"]
+#    @all_ratings = %w(G PG PG-13 NC-17 R)
+#    all_ratings_hash = Hash.new()
+#    c = 0
+#      while c < @all_ratings.size
+#      all_ratings_hash.store(@all_ratings[c], "1")
+#      c += 1
+#    end
 
+    my_ratings = Hash.new()
+    all_ratings_hash = Utils.ratinghash(@all_ratings)
+#    all_ratings_hash = {"G"=>"1", "R"=>"1", "PG-13"=>"1", "PG"=>"1"}
+    @selected_ratings = params[:ratings] || session[:ratings] || all_ratings_hash
 
-#	if @ratingselection == {} then
-#		@ratingselection = @all_ratings
-#	else @ratingselection = params[:ratings]
-#	end
-	
-	case sort
-	when 'title'
-		@movies = Movie.find(:all, :order => 'title')
-#		@movies = Movie.find_all_by_rating(@selected_ratings, :order => 'title')
-		@title_header = {:order => :title}, 'hilite'
-	when 'release_date'
-		@movies = Movie.find(:all, :order => 'release_date')
-#		@movies = Movie.find_all_by_rating(@selected_ratings, :order => 'release_date')
-		@release_date_header = {:order => :release_date}, 'hilite'
-	else
-		@movies = Movie.all
-	end
+    if params[:sort] != session[:sort]
+      session[:sort] = sort
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
+    end
 
-#	if params[:sort] != session[:sort]
-#		session[:sort] = sort
-#		redirect_to :sort => sort, :ratings => @ratingselection and return
-#	end	
-#	if params[:ratings] != session[:ratings] and @ratingselection != {}
-#      		session[:sort] = sort
-#      		session[:ratings] = @ratingselection
-#      		redirect_to :sort => sort, :ratings => @ratingselection and return
-#	end	
-#	@movies = Movie.find_all_by_rating(@ratingselection.keys, Movie.find(:all, :order => 'title'))
+    if params[:ratings] != session[:ratings] and @selected_ratings != {}
+      session[:sort] = sort
+      session[:ratings] = @selected_ratings
+      redirect_to :sort => sort, :ratings => @selected_ratings and return
+    end
+    @movies = Movie.find_all_by_rating(@selected_ratings.keys,:order => sort)
 
   end
 

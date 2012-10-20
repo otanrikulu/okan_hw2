@@ -14,7 +14,7 @@ class MoviesController < ApplicationController
 
 	sort = params[:sort]
 	@all_ratings = Movie.ratingcollect #reads all available ratings from the table
-	@ratingselection = params[:ratings] || session[:ratings] || {}
+	@selected_ratings = params[:ratings] || session[:ratings] || {}
 	@my_session_sort = session[:sort]
 	@my_session_rating = session[:ratings]
 
@@ -27,11 +27,11 @@ class MoviesController < ApplicationController
 	case sort
 	when 'title'
 		@movies = Movie.find(:all, :order => 'title')
-#		@movies = Movie.find_all_by_rating(@ratingselection, :order => 'title')
+#		@movies = Movie.find_all_by_rating(@selected_ratings, :order => 'title')
 		@title_header = {:order => :title}, 'hilite'
 	when 'release_date'
 		@movies = Movie.find(:all, :order => 'release_date')
-#		@movies = Movie.find_all_by_rating(@ratingselection, :order => 'release_date')
+#		@movies = Movie.find_all_by_rating(@selected_ratings, :order => 'release_date')
 		@release_date_header = {:order => :release_date}, 'hilite'
 	else
 		@movies = Movie.all

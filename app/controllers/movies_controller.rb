@@ -17,7 +17,8 @@ class MoviesController < ApplicationController
       @movies = Movie.find_all_by_rating(@selected_ratings, :order => 'release_date')
       @release_date_header = {:order => :release_date}, 'hilite'
     end
-    @all_ratings = Movie.ratingcollect
+#    @all_ratings = Movie.ratingcollect
+    @all_ratings = ["G", "R", "PG-13", "PG"]
 #    @all_ratings = %w(G PG PG-13 NC-17 R)
 #    all_ratings_hash = Hash.new()
 #    c = 0
